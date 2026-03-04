@@ -18,6 +18,8 @@ public class Character : MonoBehaviour
 
     [SerializeField] private float gravidadeNormal = 1f;
     [SerializeField] private float gravidadePlanando = 0.1f;
+    
+    public int vida = 3;
 
 
     void Start()
@@ -84,6 +86,16 @@ public class Character : MonoBehaviour
         }
     }
 
+    public void ReceberDano(int dano)
+    {
+        vida -= dano;
+        Debug.Log("Recebeu Dano");
+        if (vida <= 0)
+        {
+            Debug.Log("Morreu");
+            Time.timeScale = 0f;
+        }
+    }
 
 
 }
