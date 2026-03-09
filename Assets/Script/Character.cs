@@ -1,5 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using System.Collections;
+using TMPro;
 
 public class Character : MonoBehaviour
 {
@@ -21,11 +24,16 @@ public class Character : MonoBehaviour
     
     public int vida = 3;
 
+    public float score = 0f;
+
+    public TextMeshProUGUI scoreText;
+
 
     void Start()
     {
         rig = GetComponent<Rigidbody2D>();
         rig.gravityScale = gravidadeNormal;
+        LightsOut();
 
     }
 
@@ -35,9 +43,13 @@ public class Character : MonoBehaviour
         {
             pulosRestantes = maxPulos;
         }
-
+        Restart();
         Pulo();
         Planar();
+
+        Pontuacao();
+
+        scoreText.text = "Score: " + Mathf.FloorToInt(score);
 
     }
 
@@ -96,6 +108,39 @@ public class Character : MonoBehaviour
             Time.timeScale = 0f;
         }
     }
+    public void Restart()
+    {
+        if (vida <= 0 && Keyboard.current.rKey.wasPressedThisFrame)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
 
+    public void LightsOut()
+    {
+            Time.timeScale = 0f;
+            StartCoroutine(StartCountdown());
+    }
 
+    IEnumerator StartCountdown()
+    {
+        Debug.Log("3");
+        yield return new WaitForSecondsRealtime(1f);
+
+        Debug.Log("2");
+        yield return new WaitForSecondsRealtime(1f);
+
+        Debug.Log("1");
+        yield return new WaitForSecondsRealtime(1f);
+
+        Time.timeScale = 1f;
+    }
+
+    public void Pontuacao()
+    {
+        if (vida > 0)
+        {
+            score += Time.deltaTime * 10;
+        }
+    }
 }
