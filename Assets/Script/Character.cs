@@ -1,94 +1,133 @@
+
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
-using System.Collections;
-using TMPro;
 
 public class Character : MonoBehaviour
 {
-    private float forcaPulo = 8f;
-    private float velocidade = 6f;
+    [Header("Movimentação")]
+    [SerializeField] private float velocidade = 6f;
 
-    public Rigidbody2D rig;
+    [Header("Pulos")]
+    [SerializeField] private float forcaPulo = 8f;
+    [SerializeField] private float forcaPuloDuplo = 7f;
 
-    private bool podeAndar = true;
-    public bool estapulando;
-
-
-    [SerializeField] private float forcaPuloDuplo = 6f;
-    private int maxPulos = 1;
-    private int pulosRestantes;
-
+    [Header("Planar")]
     [SerializeField] private float gravidadeNormal = 1f;
-    [SerializeField] private float gravidadePlanando = 0.1f;
-    
-    public int vida = 3;
+    [SerializeField] private float gravidadePlanando = 0.2f;
 
-    public float score = 0f;
+    private Rigidbody2D rig;
+    private Collider2D colisor;
+    private Camera cameraPrincipal;
 
-    public TextMeshProUGUI scoreText;
+    private int pulosRestantes = 2;
 
-
-    void Start()
+    private void Awake()
     {
         rig = GetComponent<Rigidbody2D>();
+        colisor = GetComponent<Collider2D>();
+        cameraPrincipal = Camera.main;
+
         rig.gravityScale = gravidadeNormal;
-        LightsOut();
-
     }
 
-    void Update()
+    private void Update()
     {
-        if (!estapulando)
-        {
-            pulosRestantes = maxPulos;
-        }
-        Restart();
-        Pulo();
-        Planar();
-
-        Pontuacao();
-
-        scoreText.text = "Score: " + Mathf.FloorToInt(score);
-
+        VerificarPulo();
+        VerificarPlanar();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        if (podeAndar)
-            Mover();
-    }
+        if (Keyboard.current == null)
+            return;
 
-    void Mover()
-    {
         float eixo = 0f;
 
-        if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
+        if (Keyboard.current.aKey.isPressed ||
+            Keyboard.current.leftArrowKey.isPressed)
+        {
             eixo = -1f;
+        }
 
-        if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
+        if (Keyboard.current.dKey.isPressed ||
+            Keyboard.current.rightArrowKey.isPressed)
+        {
             eixo = 1f;
+        }
 
-        rig.linearVelocity = new Vector2(eixo * velocidade, rig.linearVelocity.y);
+        float velocidadeHorizontal = eixo * velocidade;
+
+        LimitarVelocidadeHorizontal(ref velocidadeHorizontal);
+
+        rig.linearVelocity = new Vector2(
+            velocidadeHorizontal,
+            rig.linearVelocity.y
+        );
     }
 
-    void Pulo()
+    private void LimitarVelocidadeHorizontal(ref float velocidadeHorizontal)
     {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && pulosRestantes > 0)
-        {
-            float forcaAtual = pulosRestantes == 1 ? forcaPulo : forcaPuloDuplo;
+        if (cameraPrincipal == null || colisor == null)
+            return;
 
-            rig.linearVelocity = new Vector2(rig.linearVelocity.x, forcaAtual);
+        float distanciaCamera = Mathf.Abs(
+            transform.position.z - cameraPrincipal.transform.position.z
+        );
+
+        float limiteEsquerdo = cameraPrincipal.ViewportToWorldPoint(
+            new Vector3(0f, 0.5f, distanciaCamera)
+        ).x;
+
+        float limiteDireito = cameraPrincipal.ViewportToWorldPoint(
+            new Vector3(1f, 0.5f, distanciaCamera)
+        ).x;
+
+        float larguraJogador = colisor.bounds.extents.x;
+
+        limiteEsquerdo += larguraJogador;
+        limiteDireito -= larguraJogador;
+
+        if (rig.position.x <= limiteEsquerdo && velocidadeHorizontal < 0f)
+        {
+            velocidadeHorizontal = 0f;
+        }
+
+        if (rig.position.x >= limiteDireito && velocidadeHorizontal > 0f)
+        {
+            velocidadeHorizontal = 0f;
+        }
+    }
+
+    private void VerificarPulo()
+    {
+        if (Keyboard.current == null)
+            return;
+
+        if (Keyboard.current.spaceKey.wasPressedThisFrame &&
+            pulosRestantes > 0)
+        {
+            float forcaAtual = pulosRestantes == 2
+                ? forcaPulo
+                : forcaPuloDuplo;
+
+            rig.linearVelocity = new Vector2(
+                rig.linearVelocity.x,
+                forcaAtual
+            );
 
             pulosRestantes--;
         }
     }
 
-    void Planar()
+    private void VerificarPlanar()
     {
-        if (estapulando &&
-            rig.linearVelocity.y < 0 &&
-            Keyboard.current.spaceKey.isPressed)
+        if (Keyboard.current == null)
+            return;
+
+        bool segurandoEspaco = Keyboard.current.spaceKey.isPressed;
+        bool estaCaindo = rig.linearVelocity.y < 0;
+
+        if (segurandoEspaco && estaCaindo)
         {
             rig.gravityScale = gravidadePlanando;
         }
@@ -98,49 +137,19 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void ReceberDano(int dano)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        vida -= dano;
-        Debug.Log("Recebeu Dano");
-        if (vida <= 0)
+        if (collision.gameObject.CompareTag("Ground"))
         {
-            Debug.Log("Morreu");
-            Time.timeScale = 0f;
-        }
-    }
-    public void Restart()
-    {
-        if (vida <= 0 && Keyboard.current.rKey.wasPressedThisFrame)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            pulosRestantes = 2;
         }
     }
 
-    public void LightsOut()
+    private void OnCollisionStay2D(Collision2D collision)
     {
-            Time.timeScale = 0f;
-            StartCoroutine(StartCountdown());
-    }
-
-    IEnumerator StartCountdown()
-    {
-        Debug.Log("3");
-        yield return new WaitForSecondsRealtime(1f);
-
-        Debug.Log("2");
-        yield return new WaitForSecondsRealtime(1f);
-
-        Debug.Log("1");
-        yield return new WaitForSecondsRealtime(1f);
-
-        Time.timeScale = 1f;
-    }
-
-    public void Pontuacao()
-    {
-        if (vida > 0)
+        if (collision.gameObject.CompareTag("Ground"))
         {
-            score += Time.deltaTime * 10;
+            pulosRestantes = 2;
         }
     }
 }

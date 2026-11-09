@@ -1,41 +1,44 @@
+
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Enemy : MonoBehaviour
 {
+    [Header("Movimentação")]
+    [SerializeField] private float velocidade = 4f;
 
-    private float velocidade = 2f;
+    private Camera cameraPrincipal;
 
-    public Rigidbody2D rig;
-
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
-        rig = GetComponent<Rigidbody2D>();
+        cameraPrincipal = Camera.main;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void DefinirVelocidade(float novaVelocidade)
     {
-        Mover();
+        velocidade = novaVelocidade;
     }
 
-    void Mover()
+    private void Update()
     {
-        float eixo = 0f;
+        transform.Translate(Vector2.left * velocidade * Time.deltaTime);
 
-            eixo = -1f;
+        if (cameraPrincipal != null)
+        {
+            Vector3 posicaoNaTela =
+                cameraPrincipal.WorldToViewportPoint(transform.position);
 
-        rig.linearVelocity = new Vector2(eixo * velocidade, rig.linearVelocity.y);
+            if (posicaoNaTela.x < -0.1f)
+            {
+                Destroy(gameObject);
+            }
+        }
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            collision.GetComponent<Character>().ReceberDano(1);
+            Debug.Log("Jogador atingido!");
         }
     }
 }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 398914bbf39fa374b9a9578dbc8615e3, type: 3}
+  m_Name: Ciclo1
+  m_EditorClassIdentifier: Assembly-CSharp::CycleConfig
+  nomeCiclo: Ciclo 1
+  familias:
+  - familia: {fileID: 11400000, guid: ce0c78c40d115704089d70ffab9b7b0f, type: 2}
+    porcentagem: 100
+  duracoesEtapas:
+  - 5
+  - 6
+  - 5
+  - 5
