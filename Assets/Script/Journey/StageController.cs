@@ -174,4 +174,51 @@ public class StageController : MonoBehaviour
     {
         IniciarJornada();
     }
+
+    public int ObterIndiceVelocidade(EnemyFamilyConfig familia)
+    {
+        if (familia == null ||
+            familia.velocidadesPorEtapa == null ||
+            familia.velocidadesPorEtapa.Length == 0)
+        {
+            return -1;
+        }
+
+        int cicloIntroducao = -1;
+
+        for (int i = 0; i < jornada.ciclos.Count; i++)
+        {
+            CycleConfig ciclo = jornada.ciclos[i];
+
+            foreach (EnemyFamilyChance item in ciclo.familias)
+            {
+                if (item != null && item.familia == familia)
+                {
+                    cicloIntroducao = i;
+                    break;
+                }
+            }
+
+            if (cicloIntroducao != -1)
+                break;
+        }
+
+        if (cicloIntroducao == -1)
+            return -1;
+
+        if (indiceCicloAtual > cicloIntroducao)
+        {
+            return familia.velocidadesPorEtapa.Length - 1;
+        }
+
+        if (indiceCicloAtual == cicloIntroducao)
+        {
+            return Mathf.Min(
+                indiceEtapaAtual,
+                familia.velocidadesPorEtapa.Length - 1
+            );
+        }
+
+        return -1;
+    }
 }

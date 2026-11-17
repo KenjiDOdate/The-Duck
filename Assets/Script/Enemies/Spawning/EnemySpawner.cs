@@ -66,18 +66,17 @@ public class EnemySpawner : MonoBehaviour
         if (familia == null || familia.prefab == null)
             return;
 
-        if (familia.velocidadesPorEtapa == null ||
-            familia.velocidadesPorEtapa.Length == 0)
-            return;
-
         int indiceVelocidade =
-            controladorJornada.EtapaAtual - 1;
+            controladorJornada.ObterIndiceVelocidade(familia);
 
-        if (indiceVelocidade >= familia.velocidadesPorEtapa.Length)
+        if (indiceVelocidade < 0)
             return;
 
         float velocidadeAtual =
             familia.velocidadesPorEtapa[indiceVelocidade];
+
+        float velocidadeHorizontal =
+            ObterVelocidadeHorizontal(ciclo);
 
         Vector3 posicaoSpawn = cameraPrincipal.ViewportToWorldPoint(
             new Vector3(1.1f, 0f, 10f)
@@ -92,6 +91,33 @@ public class EnemySpawner : MonoBehaviour
             Quaternion.identity
         );
 
+        GroundEnemy componenteTerrestre =
+            novoInimigo.GetComponent<GroundEnemy>();
+
+        if (componenteTerrestre != null)
+        {
+            componenteTerrestre.IniciarSubida(
+                cameraPrincipal,
+                velocidadeAtual
+            );
+
+            return;
+        }
+
+        AerialEnemy componenteAereo =
+            novoInimigo.GetComponent<AerialEnemy>();
+
+        if (componenteAereo != null)
+        {
+            componenteAereo.IniciarQueda(
+                cameraPrincipal,
+                velocidadeAtual,
+                velocidadeHorizontal
+            );
+
+            return;
+        }
+
         Enemy componenteInimigo =
             novoInimigo.GetComponent<Enemy>();
 
@@ -99,6 +125,37 @@ public class EnemySpawner : MonoBehaviour
         {
             componenteInimigo.DefinirVelocidade(velocidadeAtual);
         }
+    }
+
+    private float ObterVelocidadeHorizontal(CycleConfig ciclo)
+    {
+        foreach (EnemyFamilyChance item in ciclo.familias)
+        {
+            if (item.familia == null ||
+                item.familia.prefab == null)
+                continue;
+
+            Enemy componenteHorizontal =
+                item.familia.prefab.GetComponent<Enemy>();
+
+            if (componenteHorizontal == null)
+                continue;
+
+            int indice = controladorJornada.ObterIndiceVelocidade(
+                item.familia
+            );
+
+            if (indice >= 0)
+            {
+                return item.familia.velocidadesPorEtapa[indice];
+            }
+        }
+
+        Debug.LogError(
+            "Não foi encontrada uma família horizontal no ciclo atual!"
+        );
+
+        return 0f;
     }
 
     private EnemyFamilyConfig SortearFamilia(CycleConfig ciclo)

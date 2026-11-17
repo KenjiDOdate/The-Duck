@@ -13,6 +13,9 @@ GameObject:
   - component: {fileID: 8202094083908679519}
   - component: {fileID: 5423950046487996292}
   - component: {fileID: 1465467328684171359}
+  - component: {fileID: 717189089117340935}
+  - component: {fileID: 2226522865840905020}
+  - component: {fileID: 7921592865836646311}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -182,4 +185,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33907a6704adb8441b44444879c2606d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  velocidade: 4
+  atributoVelocidadeMovimento: {fileID: 11400000, guid: 2e3cc3e47aa5d8e47ab79c048582615f, type: 2}
+--- !u!114 &717189089117340935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7006579667147582713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63f096d11de57bc439e4a8ae3c6742a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyEntity
+  ownership: 4
+  owner: {fileID: 0}
+--- !u!114 &2226522865840905020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7006579667147582713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5a5780ea6e5e0a43a010e9d0d2c8b10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthComponent
+  atributoVidaMaxima: {fileID: 11400000, guid: 2f1ca55a6242c1b45a2c1b57eca59c03, type: 2}
+--- !u!114 &7921592865836646311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7006579667147582713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1cf8b29adc3c294bb50946850202ccb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatContainer
+  atributosBase:
+  - atributo: {fileID: 11400000, guid: 2f1ca55a6242c1b45a2c1b57eca59c03, type: 2}
+    valorBase: 10

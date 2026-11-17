@@ -269,6 +269,9 @@ GameObject:
   - component: {fileID: 616882155}
   - component: {fileID: 616882154}
   - component: {fileID: 616882153}
+  - component: {fileID: 616882159}
+  - component: {fileID: 616882158}
+  - component: {fileID: 616882160}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -288,7 +291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997bc7a8aa086fa4ca7cd602a265aeef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Character
-  velocidade: 6
+  atributoVelocidade: {fileID: 11400000, guid: 2e3cc3e47aa5d8e47ab79c048582615f, type: 2}
   forcaPulo: 8
   forcaPuloDuplo: 7
   gravidadeNormal: 1
@@ -439,6 +442,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &616882158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616882152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5a5780ea6e5e0a43a010e9d0d2c8b10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthComponent
+  atributoVidaMaxima: {fileID: 11400000, guid: 2f1ca55a6242c1b45a2c1b57eca59c03, type: 2}
+--- !u!114 &616882159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616882152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e03f912e1098f844f8a8847900554c15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerEntity
+  ownership: 4
+  owner: {fileID: 0}
+--- !u!114 &616882160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616882152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1cf8b29adc3c294bb50946850202ccb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatContainer
+  atributosBase:
+  - atributo: {fileID: 11400000, guid: 2e3cc3e47aa5d8e47ab79c048582615f, type: 2}
+    valorBase: 6
+  - atributo: {fileID: 11400000, guid: 2f1ca55a6242c1b45a2c1b57eca59c03, type: 2}
+    valorBase: 20
 --- !u!1 &1289992917
 GameObject:
   m_ObjectHideFlags: 0

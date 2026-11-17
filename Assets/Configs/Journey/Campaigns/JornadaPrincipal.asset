@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JourneyConfig
   ciclos:
   - {fileID: 11400000, guid: a9fe54638b584b347857f55a2c00f5f7, type: 2}
+  - {fileID: 11400000, guid: 74ba22cd90e977649882ca61408c45be, type: 2}
+  - {fileID: 11400000, guid: 5a12c324f91faad47922f2483c64ea18, type: 2}

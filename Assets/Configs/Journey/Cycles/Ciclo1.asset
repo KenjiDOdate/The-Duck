@@ -17,7 +17,7 @@ MonoBehaviour:
   - familia: {fileID: 11400000, guid: ce0c78c40d115704089d70ffab9b7b0f, type: 2}
     porcentagem: 100
   duracoesEtapas:
-  - 5
-  - 6
-  - 5
-  - 5
+  - 10
+  - 10
+  - 10
+  - 10

@@ -4,8 +4,8 @@ using UnityEngine.InputSystem;
 
 public class Character : MonoBehaviour
 {
-    [Header("Movimentação")]
-    [SerializeField] private float velocidade = 6f;
+    [Header("Atributo de movimentação")]
+    [SerializeField] private StatDefinition atributoVelocidade;
 
     [Header("Pulos")]
     [SerializeField] private float forcaPulo = 8f;
@@ -18,6 +18,7 @@ public class Character : MonoBehaviour
     private Rigidbody2D rig;
     private Collider2D colisor;
     private Camera cameraPrincipal;
+    private StatContainer atributos;
 
     private int pulosRestantes = 2;
 
@@ -26,6 +27,18 @@ public class Character : MonoBehaviour
         rig = GetComponent<Rigidbody2D>();
         colisor = GetComponent<Collider2D>();
         cameraPrincipal = Camera.main;
+        atributos = GetComponent<StatContainer>();
+
+        if (atributos == null || atributoVelocidade == null)
+        {
+            Debug.LogError(
+                "Character precisa de StatContainer e de uma definição de VelocidadeMovimento!",
+                this
+            );
+
+            enabled = false;
+            return;
+        }
 
         rig.gravityScale = gravidadeNormal;
     }
@@ -54,6 +67,8 @@ public class Character : MonoBehaviour
         {
             eixo = 1f;
         }
+
+        float velocidade = atributos.ObterValor(atributoVelocidade);
 
         float velocidadeHorizontal = eixo * velocidade;
 
@@ -88,14 +103,10 @@ public class Character : MonoBehaviour
         limiteDireito -= larguraJogador;
 
         if (rig.position.x <= limiteEsquerdo && velocidadeHorizontal < 0f)
-        {
             velocidadeHorizontal = 0f;
-        }
 
         if (rig.position.x >= limiteDireito && velocidadeHorizontal > 0f)
-        {
             velocidadeHorizontal = 0f;
-        }
     }
 
     private void VerificarPulo()
@@ -128,28 +139,20 @@ public class Character : MonoBehaviour
         bool estaCaindo = rig.linearVelocity.y < 0;
 
         if (segurandoEspaco && estaCaindo)
-        {
             rig.gravityScale = gravidadePlanando;
-        }
         else
-        {
             rig.gravityScale = gravidadeNormal;
-        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
-        {
             pulosRestantes = 2;
-        }
     }
 
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
-        {
             pulosRestantes = 2;
-        }
     }
 }
